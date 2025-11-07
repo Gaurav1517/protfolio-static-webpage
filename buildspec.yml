@@ -3,20 +3,30 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Install NGINX"
-      - sudo apt-get update -y 
-      - sudo apt-get install -y nginx
-      - echo "NGINX installed"
+      - echo "Installing NGINX..."
+      - yum update -y
+      - yum install -y nginx
+      - echo "NGINX installed successfully."
 
   build:
     commands:
       - echo "Build started on `date`"
-      - mkdir -p dist/assets
-      - cp index.html dist/index.html
-      - cp -r assets/* dist/assets/
+      - mkdir -p /usr/share/nginx/html/assets
+      - cp index.html /usr/share/nginx/html/index.html
+      - cp -r assets/* /usr/share/nginx/html/assets/
+      - echo "Static files copied to /usr/share/nginx/html/"
       - echo "Build completed on `date`"
+
+  post_build:
+    commands:
+      - echo "Starting NGINX for verification..."
+      - nginx -t  # test configuration syntax
+      - service nginx start
+      - echo "NGINX is running."
+      - echo "Contents of /usr/share/nginx/html:"
+      - ls -R /usr/share/nginx/html
 
 artifacts:
   files:
     - '**/*'
-  base-directory: dist
+  base-directory: /usr/share/nginx/html
