@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Install NGINX"
+      - sudo apt-get update -y 
+      - sudo apt-get install -y nginx
+      - echo "NGINX installed"
+
+  build:
+    commands:
+      - echo "Build started on `date`"
+      - mkdir -p dist/assets
+      - cp index.html dist/index.html
+      - cp -r assets/* dist/assets/
+      - echo "Build completed on `date`"
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
